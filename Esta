@@ -1,0 +1,325 @@
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local CoreGui = game:GetService("CoreGui")
+
+if CoreGui:FindFirstChild("PieroHubUI") then
+    CoreGui.PieroHubUI:Destroy()
+end
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "PieroHubUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+pcall(function() ScreenGui.Parent = CoreGui end)
+if not ScreenGui.Parent then
+    ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+end
+
+---------------------------------------------------------
+-- 1. BOTÓN FLOTANTE (Imagen limpia del gato)
+---------------------------------------------------------
+local OpenBtn = Instance.new("ImageButton")
+OpenBtn.Name = "OpenButton"
+OpenBtn.Parent = ScreenGui
+OpenBtn.Size = UDim2.new(0, 50, 0, 50)
+OpenBtn.Position = UDim2.new(0.05, 0, 0.2, 0)
+OpenBtn.BackgroundColor3 = Color3.fromRGB(15, 20, 28)
+OpenBtn.Image = "rbxassetid://101586803449268"
+OpenBtn.ScaleType = Enum.ScaleType.Crop
+OpenBtn.AutoButtonColor = false
+OpenBtn.ClipsDescendants = true
+
+local OpenCorner = Instance.new("UICorner")
+OpenCorner.CornerRadius = UDim.new(0, 14)
+OpenCorner.Parent = OpenBtn
+
+local OpenStroke = Instance.new("UIStroke")
+OpenStroke.Color = Color3.fromRGB(0, 200, 180)
+OpenStroke.Thickness = 1.5
+OpenStroke.Transparency = 0.3
+OpenStroke.Parent = OpenBtn
+
+---------------------------------------------------------
+-- 2. VENTANA PRINCIPAL
+---------------------------------------------------------
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.Size = UDim2.new(0, 460, 0, 290)
+MainFrame.Position = UDim2.new(0.5, -230, 0.5, -145)
+MainFrame.BackgroundColor3 = Color3.fromRGB(12, 15, 22)
+MainFrame.BackgroundTransparency = 0.1
+MainFrame.Visible = false
+MainFrame.ClipsDescendants = true
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 12)
+MainCorner.Parent = MainFrame
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Color = Color3.fromRGB(255, 255, 255)
+MainStroke.Thickness = 1
+MainStroke.Transparency = 0.8
+MainStroke.Parent = MainFrame
+
+-- Textura de fondo
+local BgImage = Instance.new("ImageLabel")
+BgImage.Parent = MainFrame
+BgImage.Size = UDim2.new(1, 0, 1, 0)
+BgImage.BackgroundTransparency = 1
+BgImage.Image = "rbxassetid://101586803449268"
+BgImage.ImageTransparency = 0.65
+BgImage.ScaleType = Enum.ScaleType.Crop
+BgImage.ZIndex = 0
+
+-- BARRA SUPERIOR (HEADER)
+local Header = Instance.new("Frame")
+Header.Name = "Header"
+Header.Parent = MainFrame
+Header.Size = UDim2.new(1, 0, 0, 42)
+Header.BackgroundTransparency = 1
+Header.ZIndex = 2
+
+-- Botón de cerrar con ICONO VECTORIAL (adiós a los cuadritos raros)
+local CloseBtn = Instance.new("ImageButton")
+CloseBtn.Name = "CloseBtn"
+CloseBtn.Parent = Header
+CloseBtn.Size = UDim2.new(0, 26, 0, 26)
+CloseBtn.Position = UDim2.new(1, -34, 0.5, -13)
+CloseBtn.BackgroundTransparency = 1
+CloseBtn.Image = "rbxassetid://10747384343" -- ID de icono de cruz limpio
+CloseBtn.ImageColor3 = Color3.fromRGB(180, 190, 205)
+CloseBtn.ZIndex = 2
+
+---------------------------------------------------------
+-- 3. MENÚ DE PESTAÑAS SUPERIOR IZQUIERDO
+---------------------------------------------------------
+local TopTabsContainer = Instance.new("Frame")
+TopTabsContainer.Name = "TopTabsContainer"
+TopTabsContainer.Parent = Header
+TopTabsContainer.Size = UDim2.new(0, 220, 0, 32)
+TopTabsContainer.Position = UDim2.new(0, 12, 0.5, -16)
+TopTabsContainer.BackgroundTransparency = 1
+TopTabsContainer.ZIndex = 2
+
+local TabsLayout = Instance.new("UIListLayout")
+TabsLayout.Parent = TopTabsContainer
+TabsLayout.FillDirection = Enum.FillDirection.Horizontal
+TabsLayout.SortOrder = Enum.SortOrder.LayoutOrder
+TabsLayout.Padding = UDim.new(0, 8)
+
+---------------------------------------------------------
+-- 4. CONTENEDOR DE PÁGINAS
+---------------------------------------------------------
+local PagesContainer = Instance.new("Folder")
+PagesContainer.Name = "PagesContainer"
+PagesContainer.Parent = MainFrame
+
+-- Página 1 (Main)
+local PageMain = Instance.new("ScrollingFrame")
+PageMain.Name = "PageMain"
+PageMain.Parent = PagesContainer
+PageMain.Size = UDim2.new(1, 0, 1, -45)
+PageMain.Position = UDim2.new(0, 0, 0, 45)
+PageMain.BackgroundTransparency = 1
+PageMain.BorderSizePixel = 0
+PageMain.CanvasSize = UDim2.new(0, 0, 0, 300)
+PageMain.ScrollBarThickness = 2
+PageMain.Visible = true
+PageMain.ZIndex = 2
+
+local MainLayout = Instance.new("UIListLayout")
+MainLayout.Parent = PageMain
+MainLayout.SortOrder = Enum.SortOrder.LayoutOrder
+MainLayout.Padding = UDim.new(0, 8)
+
+local MainPad = Instance.new("UIPadding")
+MainPad.Parent = PageMain
+MainPad.PaddingLeft = UDim.new(0, 15)
+MainPad.PaddingRight = UDim.new(0, 15)
+MainPad.PaddingTop = UDim.new(0, 6)
+
+-- Título "PX" en color BLANCO PURO, más chico y elegante
+local SectionTitle = Instance.new("TextLabel")
+SectionTitle.Parent = PageMain
+SectionTitle.Size = UDim2.new(1, 0, 0, 18)
+SectionTitle.BackgroundTransparency = 1
+SectionTitle.Text = "PX"
+SectionTitle.TextColor3 = Color3.fromRGB(255, 255, 255) -- Blanco puro
+SectionTitle.Font = Enum.Font.GothamBold
+SectionTitle.TextSize = 13
+SectionTitle.TextXAlignment = Enum.TextXAlignment.Left
+SectionTitle.ZIndex = 2
+
+local WelcomeText = Instance.new("TextLabel")
+WelcomeText.Parent = PageMain
+WelcomeText.Size = UDim2.new(1, 0, 0, 40)
+WelcomeText.BackgroundTransparency = 1
+WelcomeText.Text = "Interfaz personalizada con pestañas superiores y diseño limpio."
+WelcomeText.TextColor3 = Color3.fromRGB(180, 190, 205)
+WelcomeText.Font = Enum.Font.Gotham
+WelcomeText.TextSize = 12
+WelcomeText.TextWrapped = true
+WelcomeText.TextXAlignment = Enum.TextXAlignment.Left
+WelcomeText.ZIndex = 2
+
+-- Página 2 (Player)
+local PagePlayer = Instance.new("ScrollingFrame")
+PagePlayer.Name = "PagePlayer"
+PagePlayer.Parent = PagesContainer
+PagePlayer.Size = UDim2.new(1, 0, 1, -45)
+PagePlayer.Position = UDim2.new(0, 0, 0, 45)
+PagePlayer.BackgroundTransparency = 1
+PagePlayer.BorderSizePixel = 0
+PagePlayer.CanvasSize = UDim2.new(0, 0, 0, 300)
+PagePlayer.ScrollBarThickness = 2
+PagePlayer.Visible = false
+PagePlayer.ZIndex = 2
+
+local PlayerLayout = Instance.new("UIListLayout")
+PlayerLayout.Parent = PagePlayer
+PlayerLayout.SortOrder = Enum.SortOrder.LayoutOrder
+PlayerLayout.Padding = UDim.new(0, 8)
+
+local PlayerPad = Instance.new("UIPadding")
+PlayerPad.Parent = PagePlayer
+PlayerPad.PaddingLeft = UDim.new(0, 15)
+PlayerPad.PaddingRight = UDim.new(0, 15)
+PlayerPad.PaddingTop = UDim.new(0, 6)
+
+local PlayerTitle = Instance.new("TextLabel")
+PlayerTitle.Parent = PagePlayer
+PlayerTitle.Size = UDim2.new(1, 0, 0, 18)
+PlayerTitle.BackgroundTransparency = 1
+PlayerTitle.Text = "PX • Player"
+PlayerTitle.TextColor3 = Color3.fromRGB(255, 255, 255) -- Blanco puro
+PlayerTitle.Font = Enum.Font.GothamBold
+PlayerTitle.TextSize = 13
+PlayerTitle.TextXAlignment = Enum.TextXAlignment.Left
+PlayerTitle.ZIndex = 2
+
+---------------------------------------------------------
+-- 5. CREACIÓN DE PESTAÑAS SUPERIORES
+---------------------------------------------------------
+local function CreateTabButton(name, text, iconAssetId, pageToSwitch)
+    local btn = Instance.new("TextButton")
+    btn.Name = name
+    btn.Size = UDim2.new(0, 95, 0, 28)
+    btn.AutoButtonColor = false
+    btn.Text = ""
+    btn.ZIndex = 2
+    
+    local isSelected = (pageToSwitch.Visible)
+    btn.BackgroundColor3 = isSelected and Color3.fromRGB(25, 35, 50) or Color3.fromRGB(0, 0, 0)
+    btn.BackgroundTransparency = isSelected and 0.2 or 0.6
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 6)
+    corner.Parent = btn
+
+    local stroke = Instance.new("UIStroke")
+    stroke.Color = Color3.fromRGB(255, 255, 255)
+    stroke.Transparency = isSelected and 0.7 or 0.9
+    stroke.Thickness = 1
+    stroke.Parent = btn
+
+    local icon = Instance.new("ImageLabel")
+    icon.Parent = btn
+    icon.Size = UDim2.new(0, 14, 0, 14)
+    icon.Position = UDim2.new(0, 8, 0.5, -7)
+    icon.BackgroundTransparency = 1
+    icon.Image = iconAssetId
+    icon.ImageColor3 = isSelected and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(150, 160, 175)
+    icon.ZIndex = 2
+
+    local lbl = Instance.new("TextLabel")
+    lbl.Parent = btn
+    lbl.Size = UDim2.new(1, -26, 1, 0)
+    lbl.Position = UDim2.new(0, 26, 0, 0)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = text
+    lbl.TextColor3 = isSelected and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(150, 160, 175)
+    lbl.Font = Enum.Font.GothamMedium
+    lbl.TextSize = 12
+    lbl.TextXAlignment = Enum.TextXAlignment.Left
+    lbl.ZIndex = 2
+
+    btn.MouseButton1Click:Connect(function()
+        PageMain.Visible = false
+        PagePlayer.Visible = false
+        pageToSwitch.Visible = true
+        
+        for _, child in ipairs(TopTabsContainer:GetChildren()) do
+            if child:IsA("TextButton") then
+                child.BackgroundTransparency = 0.6
+                child.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+                if child:FindFirstChild("UIStroke") then
+                    child.UIStroke.Transparency = 0.9
+                end
+                if child:FindFirstChild("TextLabel") then
+                    child.TextLabel.TextColor3 = Color3.fromRGB(150, 160, 175)
+                end
+                if child:FindFirstChild("ImageLabel") then
+                    child.ImageLabel.ImageColor3 = Color3.fromRGB(150, 160, 175)
+                end
+            end
+        end
+        
+        btn.BackgroundTransparency = 0.2
+        btn.BackgroundColor3 = Color3.fromRGB(25, 35, 50)
+        stroke.Transparency = 0.7
+        lbl.TextColor3 = Color3.fromRGB(255, 255, 255)
+        icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
+    end)
+
+    btn.Parent = TopTabsContainer
+    return btn
+end
+
+CreateTabButton("BtnMain", "Main", "rbxassetid://10723407389", PageMain)
+CreateTabButton("BtnPlayer", "Player", "rbxassetid://10747373176", PagePlayer)
+
+---------------------------------------------------------
+-- 6. ANIMACIÓN Y ARRASTRE TÁCTIL
+---------------------------------------------------------
+local isOpen = false
+
+OpenBtn.MouseButton1Click:Connect(function()
+    isOpen = not isOpen
+    MainFrame.Visible = isOpen
+end)
+
+CloseBtn.MouseButton1Click:Connect(function()
+    isOpen = false
+    MainFrame.Visible = false
+end)
+
+local dragging, dragInput, dragStart, startPos
+
+OpenBtn.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = OpenBtn.Position
+        
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+OpenBtn.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        OpenBtn.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
